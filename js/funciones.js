@@ -1,3 +1,8 @@
+const resetSeleccionBorrar = () => {
+  seleccBorrar = [];
+  domBotonBorrar.disabled = true;
+};
+
 const clickCrearFiltrar = () => {
   domFiltros.classList.toggle('visually-hidden');
   domCrearTareas.classList.toggle('visually-hidden');
@@ -51,8 +56,13 @@ const buildTarea = (tarea) => {
 const printTareas = (arrTareas) => {
   let ulHtml = domListaTareas;
   ulHtml.innerHTML = '';
-
-  arrTareas.forEach((tarea) => ulHtml.appendChild(buildTarea(tarea)));
+  if (arrTareas.length < 1) {
+    domMensajeListaVacia.classList.remove('visually-hidden');
+  } else {
+    domMensajeListaVacia.classList.add('visually-hidden');
+    arrTareas.forEach((tarea) => ulHtml.appendChild(buildTarea(tarea)));
+    resetSeleccionBorrar();
+  }
 };
 
 const filtrarPorPrioridad = (event) => {
@@ -110,7 +120,6 @@ const validator = (tarea) => {
 
 const clearValidator = (event) => {
   event.target.classList.remove('border', 'border-2', 'border-danger-subtle');
-  if (event.target.key === 'Enter');
 };
 
 const insertTarea = () => {
@@ -123,22 +132,37 @@ const insertTarea = () => {
   }
 };
 
+const preventEnter = (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    insertTarea();
+  }
+};
+
 const guardarSeleccion = (event) => {
-    if (event.target.matches('input[type="checkbox"]')){
-        if(event.target.checked){
-            seleccBorrar.push(event.target.id);
-        } else {
-            let index = seleccBorrar.indexOf(event.target.id);
-            seleccBorrar.splice(index, 1);
-        }
-        if(seleccBorrar.length !== 0){
-            domBotonBorrar.disabled = false;
-        } else {
-            domBotonBorrar.disabled = true;
-        }
+  if (event.target.matches('input[type="checkbox"]')) {
+    if (event.target.checked) {
+      seleccBorrar.push(event.target.id);
+    } else {
+      let index = seleccBorrar.indexOf(event.target.id);
+      seleccBorrar.splice(index, 1);
     }
-}
+    if (seleccBorrar.length !== 0) {
+      domBotonBorrar.disabled = false;
+    } else {
+      domBotonBorrar.disabled = true;
+    }
+  }
+};
 
 const borrarSeleccion = () => {
-    console.log('funcionalidad pendiente');
-}
+  let tareasActualizada = tareas.filter((tarea) => !seleccBorrar.includes(tarea.id.toString()));
+  tareas = tareasActualizada;
+  printTareas(tareas);
+};
+
+const verificarCampoVacio = (event) => {
+  if (event.target.value === '') {
+    printTareas(tareas);
+  }
+};

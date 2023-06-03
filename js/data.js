@@ -1,3 +1,3 @@
-const tareas = [];
-const seleccBorrar = [];
+let tareas = [];
+let seleccBorrar = [];
 let id = 0;
