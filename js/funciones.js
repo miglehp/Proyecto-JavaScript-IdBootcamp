@@ -77,3 +77,68 @@ const filtrarPorNombre = (event) => {
     }
   }
 };
+
+const buildTareaInsert = () => {
+  let tarea = {
+    id: 0,
+    title: '',
+    priority: '',
+  };
+  tarea.id = id;
+  tarea.title = domTextCrear.value;
+  tarea.priority = domSelectCrear.value;
+  return tarea;
+};
+
+const validator = (tarea) => {
+  let priorityNotValidated = tarea.priority === '';
+  let validated = false;
+
+  if (priorityNotValidated) {
+    domSelectCrear.classList.add('border', 'border-2', 'border-danger-subtle');
+  }
+  if (tarea.title === '') {
+    domTextCrear.classList.add('border', 'border-2', 'border-danger-subtle');
+  } else if (tareas.some((tarea2) => tarea2.title.toLowerCase() === tarea.title.toLowerCase())) {
+    domTextCrear.classList.add('border', 'border-2', 'border-danger-subtle');
+    domTextCrear.value = '';
+  } else {
+    validated = !priorityNotValidated;
+  }
+  return validated;
+};
+
+const clearValidator = (event) => {
+  event.target.classList.remove('border', 'border-2', 'border-danger-subtle');
+  if (event.target.key === 'Enter');
+};
+
+const insertTarea = () => {
+  let tarea = buildTareaInsert();
+  if (validator(tarea)) {
+    tareas.push(tarea);
+    id++;
+    printTareas(tareas);
+  } else {
+  }
+};
+
+const guardarSeleccion = (event) => {
+    if (event.target.matches('input[type="checkbox"]')){
+        if(event.target.checked){
+            seleccBorrar.push(event.target.id);
+        } else {
+            let index = seleccBorrar.indexOf(event.target.id);
+            seleccBorrar.splice(index, 1);
+        }
+        if(seleccBorrar.length !== 0){
+            domBotonBorrar.disabled = false;
+        } else {
+            domBotonBorrar.disabled = true;
+        }
+    }
+}
+
+const borrarSeleccion = () => {
+    console.log('funcionalidad pendiente');
+}
